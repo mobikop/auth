@@ -1,0 +1,473 @@
+{
+	"info": {
+		"_postman_id": "4841d138-cd4a-4099-ab9d-5f5d73178128",
+		"name": "Auth API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "14415e2f-e4a4-4a33-99cf-2910b9796042",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var responseJSON = JSON.parse(responseBody)",
+							"pm.collectionVariables.set(\"userId\", responseJSON[\"id\"])"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8916721d-dfc3-46f0-875e-d3b38f875fb9",
+						"exec": [
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"username\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							"pm.collectionVariables.set(\"firstname\", pm.variables.replaceIn('{{$randomFirstName}}'))",
+							"pm.collectionVariables.set(\"lastname\", pm.variables.replaceIn('{{$randomLastName}}'))",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))",
+							"pm.collectionVariables.set(\"phone\", pm.variables.replaceIn('{{$randomPhoneNumber}}'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\",\n    \"firstName\": \"{{firstname}}\",\n    \"lastName\": \"{{lastname}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\"\n}"
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/registration",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "no user access",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12959d87-d403-4b22-a2b9-be3dfd3d82ae",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try {",
+							"    responseJSON = JSON.parse(responseBody);",
+							"}",
+							"catch (err) {",
+							"}",
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "{{userId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}/user/profile",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7cd9f388-eb45-49b6-803a-49b75a40a3e2",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/login",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5cd60968-ad46-486f-8b2b-7f555dd47183",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "{{userId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/profile",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"login\": \"vk\",\n  \"firstName\": \"Viacheslav\",\n  \"lastName\": \"Kopchenin\",\n  \"email\": \"vk@com\",\n  \"phone\": \"+911\"\n}"
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/logout",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register user 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"vk\",\n  \"password\": \"vk\",\n  \"firstName\": \"Viacheslav\",\n  \"lastName\": \"Kopchenin\",\n  \"email\": \"vk@com\",\n  \"phone\": \"+911\"\n}"
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/registration",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "71e106ce-77eb-4d9f-ad19-7a602472fb19",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/login",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user profile 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b52fdb4-3c3d-4046-b636-03969f9e9cd3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "{{userId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/user/profile",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout user 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"login\": \"vk\",\n  \"firstName\": \"Viacheslav\",\n  \"lastName\": \"Kopchenin\",\n  \"email\": \"vk@com\",\n  \"phone\": \"+911\"\n}"
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/logout",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "070249f9-bc36-4dfa-92ba-a095a392c867",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9500acd2-f8d9-457e-ad8a-f7ebbd58253f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5b41aa45-a7b7-427d-b218-541ec8beb168",
+			"key": "userId",
+			"value": "{userId}"
+		},
+		{
+			"id": "b544dfb3-b824-420a-a493-b339f101d697",
+			"key": "baseUrl",
+			"value": "arch.homework"
+		},
+		{
+			"id": "46aa9fe3-b51b-4bd9-995f-14c18b4f37da",
+			"key": "username",
+			"value": ""
+		},
+		{
+			"id": "d59d243f-b049-4046-a953-60529ce2444d",
+			"key": "password",
+			"value": ""
+		},
+		{
+			"id": "b515fabc-e317-43f8-8b4a-f4b6ad038ebc",
+			"key": "firstname",
+			"value": ""
+		},
+		{
+			"id": "d1202a22-afbf-40d9-834c-7669715d0588",
+			"key": "lastname",
+			"value": ""
+		},
+		{
+			"id": "e6e0534d-5a3e-4c10-ae8c-156f0792388e",
+			"key": "email",
+			"value": ""
+		},
+		{
+			"id": "53e1d38b-9b71-4033-9f8d-51dc22f038b1",
+			"key": "phone",
+			"value": ""
+		},
+		{
+			"id": "d4e60631-2a0a-4d09-8746-df40e05fdf03",
+			"key": "user",
+			"value": "",
+			"disabled": true
+		},
+		{
+			"id": "d560352a-caf5-493b-8c38-f58232cf1df6",
+			"key": "pass",
+			"value": "",
+			"disabled": true
+		}
+	],
+	"protocolProfileBehavior": {}
+}

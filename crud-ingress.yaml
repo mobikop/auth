@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: app-proxy
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "http://auth-service.app.svc.cluster.local:80/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host/login"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User,X-Email,X-UserId,X-First-Name,X-Last-Name"
+spec:
+  rules:
+  - host: arch.homework
+    http:
+      paths:
+      - backend:
+          serviceName: crud-app-service
+          servicePort: 80
+        path: /user/profile
